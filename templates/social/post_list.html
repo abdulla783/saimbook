@@ -1,0 +1,29 @@
+{% extends 'social/base.html' %}
+{% load static %}
+ 
+{% block body %}
+
+<div class="container">
+    <h3>Post>>></h3>
+        <div class="row">
+            {% for post in posts %}
+            <div class="col-md-6">
+                <div class="img-thumbnail mt-2">
+               <a href="/social/{{ post.id }}/{{ post.slug }}"><h2> {{ post.title }}</h2></a> 
+               <small> {{ post.created }}</small>
+                <h5><strong> Author: </strong>{{ post.author }}</h5>
+                <p>{{ post.body}}</p>
+                </div>
+            </div>
+            {% empty %}
+            <div class="container">
+            <h3>No Posts Found having search query "{{ request.GET.q }}"</h3>
+            <h6>Please try a relevent search query. Thanks!</h6>
+            </div>
+            {% endfor %}
+            </div>
+  <ul class="pagination mt-2">
+ {% include 'social/pagination.html' %}
+  </ul>
+</div>
+{% endblock %}

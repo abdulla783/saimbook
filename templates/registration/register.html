@@ -1,0 +1,10 @@
+{% extends 'social/base.html' %}
+
+{% block body %}
+<div class="container mt-3">
+<form action="/register/" method="post"> {% csrf_token %}
+{{ form.as_p }}
+<input type="submit" value="Submit" class="btn btn-outline-primary">
+</form>
+</div>
+{% endblock body %}

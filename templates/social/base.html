@@ -1,0 +1,175 @@
+<!doctype html>
+{% load static %}
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+            crossorigin="anonymous" />
+  <script src="https://kit.fontawesome.com/fd774e99af.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'social/css/style.css' %}">
+    <title>{% block title %}SaimBook{% endblock title %}</title>
+  </head>
+  <body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <a class="navbar-brand" href="/">SaimBook</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      {% if request.user.is_authenticated %}
+      <li class="nav-item">
+        <a class="nav-link" href="/social/my_profile/">Profile</a>
+      </li>
+      {% endif %}
+      <li class="nav-item">
+        <a class="nav-link" href="#">About Us</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Contact Us</a>
+      </li>
+     
+      </ul>
+    <form class="form-inline my-2 my-lg-0" action="/" method='get'>
+      <input class="form-control mr-sm-2" type="search" name="q" placeholder="Search" aria-label="Search">
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit"><i class="fas fa-search fa-lg"></i></button>
+    </form>
+  <ul class="navbar-nav">
+    {% if request.user.is_authenticated %}
+     <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        {% if request.user.profile.photo %}
+          <img src="{{ request.user.profile.photo.url }}" alt="" width="30" height="30" class="d-inline-block align-top">
+        {% else %}
+          <img src="/media/download.jpg" alt="" width="30" height="30" class="d-inline-block align-top">
+        {% endif %}
+          <span>Hi {{ request.user|capfirst }}</span>
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="/social/my_post/">My Post</a>
+          <a class="dropdown-item" href="/social/post_create">Create Post</a>
+          <a class="dropdown-item" href="/logout">Logout</a>
+        </div>
+      </li>
+      {% else %}
+      <li class="nav-item">
+      
+        <a class="nav-link" href="/login"><i class="far fa-user fa-lg"></i></a>
+      </li>
+      </ul>
+    {% endif %}
+  </div>
+</nav>
+  {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissble fade show" role="alert">
+                <strong>{{ message.tags }}:</strong> {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% endfor %}
+    {% endif %}
+   <div class="container">
+   {% block body %}
+
+   {% endblock body %}
+    {% include 'social/footer.html' %}
+    </div>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="{% static 'social/js/index.js' %}"></script>
+    <script type="text/javascript">
+
+        $(document).ready(function(event){
+          $('#delete').click(function(){
+            return confirm("Are you sure to delete this post permanently?")
+          });
+
+          $('.reply-btn').click(function(){
+            $(this).parent().parent().next('.replied-comments').fadeToggle()
+          });
+
+          $(document).on('click', '#like', function(event){
+            event.preventDefault();
+            var pk = $(this).attr('value');
+            $.ajax({
+              type: 'POST',
+              url: '/like/',
+              data: {'post_id': pk, 'csrfmiddlewaretoken': '{{ csrf_token }}' },
+              dataType: 'json',
+              success: function(response){
+                $('#like-section').html(response['form'])
+                console.log($('#like-section').html(response['form']));
+              },
+              error: function(rs, e){
+                console.log(rs.responseText);
+              },
+            });
+          });
+        });
+
+      $(document).on('submit', '.comment-form', function(event){
+        event.preventDefault();
+        console.log($(this).serialize());
+        $.ajax({
+          type: 'POST',
+          url: $(this).attr('action'),
+          data: $(this).serialize(),
+          dataType: 'json',
+          success: function(response){
+            $('.main-comment-section').html(response['form']);
+            $('textarea').val('');
+            $('.reply-btn').click(function(){
+            $(this).parent().parent().next('.replied-comments').fadeToggle();
+            $('textarea').val('');
+          });
+
+          },
+          error: function(re, e){
+            console.log(re.responseText);
+          },
+        });
+      });
+
+
+       $(document).on('submit', '.reply-form', function(event){
+        event.preventDefault();
+        console.log($(this).serialize());
+        $.ajax({
+          type: 'POST',
+          url: $(this).attr('action'),
+          data: $(this).serialize(),
+          dataType: 'json',
+          success: function(response){
+            $('.main-comment-section').html(response['form']);
+            $('textarea').val('');
+            $('.reply-btn').click(function(){
+            $(this).parent().parent().next('.replied-comments').fadeToggle();
+            $('textarea').val('');
+          });
+
+          },
+          error: function(re, e){
+            console.log(re.responseText);
+          },
+        });
+      });
+
+    </script>
+    {% block js %}
+    {% endblock js %}
+  </body>
+</html>
+
+   

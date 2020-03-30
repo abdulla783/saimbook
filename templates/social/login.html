@@ -1,0 +1,23 @@
+{% extends 'social/base.html' %}
+
+{% block body %}
+
+<div class="container mt-3">
+<form action="/login/" method="post"> {% csrf_token %}
+{{ form.as_p }}
+<input type="submit" value="Login" class="btn btn-outline-primary">
+<small>
+<a href="/password-reset">Forgot Password</a><br>
+<a href="/register/">No account ? Register Here</a>
+</small>
+<p>-- OR --</p>
+<a href="{% url 'social:begin' 'github' %}">
+<button type="button" name="button" class="btn btn-primary">GitHub</button>
+</a>
+<a href="{% url 'social:begin' 'google-oauth2' %}">
+<button type="button" name="button" class="btn btn-danger">Google+</button>
+</a>
+</form>
+</div>
+
+{% endblock body %}

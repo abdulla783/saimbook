@@ -1,0 +1,13 @@
+{% extends 'social/base.html' %}
+{% load static %}
+
+{% block body %}
+<div class="container mt-3">
+<form action="/social/post_create/" method='post' enctype="multipart/form-data"> {% csrf_token %}
+{{ form.as_p }}
+{{ formset.as_table }}
+<input type="submit" value="Create" class="btn btn-success">
+</form>
+</div>
+{% endblock body %}
+

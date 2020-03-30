@@ -1,0 +1,26 @@
+{% extends 'social/base.html' %}
+
+{% block title %}Profile {{ user.username }} | {{ block.super }} {% endblock title %}
+{% block body %}
+<div class="container mt-3">
+    <div class="content-section">
+        <div class="media">
+        {% if request.user.profile.photo %}
+          <img src="{{ request.user.profile.photo.url }}" alt="" width="100" height="150" class="d-inline-block align-top">
+        {% else %}
+          <img src="/media/download.jpg" alt="" width="100" height="150" class="d-inline-block align-top">
+        {% endif %}
+          <div class="media-body ml-3">
+            <!-- <h2 class="account-heading">Username: {{ user.username }}</h2> -->
+            <h2 class="account-heading">Name: {{ user.first_name }} {{ user.last_name }}</h2>
+            <p class="text-secondary">Email: {{ user.email }}</p>
+            <p class="text-secondary">Birth: {{ user.profile.dob }}</p>
+            <a href="/social/edit_profile"><button class="btn btn-outline-primary">Edit Profile</button></a>
+            <a href="/social/my_post/"><button class="btn btn-outline-primary">My Post</button></a>
+            <a href="/social/favourite/"><button class="btn btn-outline-primary">Favourite Post</button></a>
+          </div>
+        </div>
+        <!-- FORM HERE -->
+      </div>
+</div>
+{% endblock %}

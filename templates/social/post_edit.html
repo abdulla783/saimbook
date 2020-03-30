@@ -1,0 +1,15 @@
+{% extends 'social/base.html' %}
+{% block title %}{{ post.title }}| Edit {% endblock title %}
+
+{% block body %}
+<div class="container mt-3">
+    <form action="/social/{{ post.id }}/post_edit/" method="post"> {% csrf_token %}
+        {{ form.as_p }}
+        {{ formset.management_form }}
+        {% for f in formset %}
+            {{ f.as_p }}
+        {% endfor %}
+        <input type="submit" value="Update" class="btn btn-success">    
+    </form>
+</div>
+{% endblock body %}
